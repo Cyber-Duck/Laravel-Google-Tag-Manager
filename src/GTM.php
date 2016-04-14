@@ -1,122 +1,133 @@
 <?php
 
-namespace CyberDuck\LaravelGoogleTagManager
+/**
+ * GTM sore class for Google Tag Manager functionality
+ *
+ * @package cyber-duck/laravel-google-tag-manager
+ * @license MIT License https://github.com/cyber-duck/laravel-google-tag-manager/blob/master/LICENSE
+ * @author  <andrewm@cyber-duck.co.uk>
+ **/
+namespace CyberDuck\LaravelGoogleTagManager;
 
 class GTM {
 
     /**
-     * The Tag Manager container ID
+     * Data layer object
      *
-     * @var int
+     * @var GTMData
      */
-	private $id;
+	private $data;
 
     /**
-     * The Tag Manager container ID
+     * View object
      *
-     * @var int
+     * @var GTMView
      */
-	private $data = array();
-
-	private $events = array();
-
-	private $purchases = array();
-
-	private $refunds = array();
+	private $view;
 
 	/**
-	 * 
+	 * Set up the required objects for this class
+	 *
+	 * @return void
+	 */
+	public function __construct()
+	{
+		$this->data = new GTMData();
+		$this->view = new GTMView();
+	}
+
+	/**
+	 * Set the Tag Manager container ID
+	 *
+	 * @param string $id The container ID GTM-XXXXX
+	 * @return void
+	 */
+	public function id($id)
+	{
+		$this->data->setID($id);
+	}
+
+	/**
+	 * Set a dataLayer key value pair
 	 *
 	 * @param string $name  DataLayer var name
-	 * @param string $value DataLayer var value
-	 *
+	 * @param mixed  $value DataLayer var value
 	 * @return void
 	 */
 	public function data($name, $value)
 	{
-
+		$this->data->pushData($name, $value);
 	}
 
 	/**
-	 * 
+	 * Push an event to the dataLayer
 	 *
-	 * @param string $name  DataLayer var name
-	 * @param string $value DataLayer var value
-	 *
+	 * @param string $name  The event name
 	 * @return void
 	 */
 	public function event($name)
 	{
-
+		$this->data->pushEvent($name);
 	}
 
 	/**
-	 * 
+	 * Add an ecommerce transaction
 	 *
-	 * @param array $params An array of purchase fields
+	 * @param array $fields An array of purchase fields
+	 * @return void
+	 */
+	public function purchase($fields)
+	{
+		$this->data->pushPurchase($fields);
+	}
+
+	/**
+	 * Add an ecommerce transaction item
+	 * Used in conjunction with ->purchase()
+	 *
+	 * @param array $fields An array of a purchase item fields
+	 * @return void
+	 */
+	public function purchaseItem($fields)
+	{
+		$this->data->pushPurchaseItem($fields);
+	}
+
+	/**
+	 * Refund an ecommerce transaction
+	 *
+	 * @param string $id The id of the transaction to refund
+	 * @return void
+	 */
+	public function refundTransaction($id)
+	{
+		$this->data->pushRefundTransaction($id);
+	}
+
+	/**
+	 * Refund an ecommerce transaction item quantity
+	 *
+	 * @param string $id        The id of the transaction
+	 * @param string $productId The id of the item
+	 * @param int    $quantity  The quantity to refund
 	 *
 	 * @return void
 	 */
-	public function purchase($params)
+	public function refundItem($id, $productId, $quantity)
 	{
-
+		$this->data->pushRefundTransactionItem($id, $productId, $quantity);
 	}
 
 	/**
-	 * 
-	 *
-	 * @param array $params An array of purchase individual item fields
-	 *
-	 * @return void
-	 */
-	public function purchaseItem($params)
-	{
-
-	}
-
-	/**
-	 * 
-	 *
-	 * @param int $id The id of a purchase item to refund
-	 *
-	 * @return void
-	 */
-	public function refund($id)
-	{
-
-	}
-
-	/**
-	 * 
+	 * Return the formatted dataLayer code
 	 *
 	 * @return string
 	 */
 	public function code()
 	{
-
-	}
-
-	/**
-	 * 
-	 *
-	 * @param int $id The id of the Tag manager container
-	 *
-	 * @return void
-	 */
-	public function id($id)
-	{
-
-	}
-
-	/**
-	 * 
-	 *
-	 * @param int $id The id of the Tag manager container
-	 *
-	 * @return void
-	 */
-	public function dataLayer()
-	{
-
+		return $this->view->make(
+			$this->data->getID(),
+			$this->data->getDataLayer()
+		);
 	}
 }
