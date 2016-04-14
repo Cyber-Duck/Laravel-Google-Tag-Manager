@@ -1,5 +1,5 @@
 {
-    "name": "cyber-duck/silverstripe-seo",
+    "name": "cyber-duck/laravel-google-tag-manager",
     "description": "A laravel package to add Google Tag Manager tracking and features to an app",
     "type": "laravel-module",
     "homepage": "http://github.com/cyber-duck/laravel-google-tag-manager",
