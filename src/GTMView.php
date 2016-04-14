@@ -23,6 +23,8 @@ class GTMView {
         return '<script>
         window.dataLayer = window.dataLayer || [];
         '.$data.'
+        </script>
+        <script>
         <!-- Google Tag Manager -->
         <noscript><iframe src="//www.googletagmanager.com/ns.html?id=GTM-'.$id.'"
         height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
