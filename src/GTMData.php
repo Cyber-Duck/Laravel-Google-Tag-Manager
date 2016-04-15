@@ -9,7 +9,14 @@
  **/
 namespace CyberDuck\LaravelGoogleTagManager;
 
-class GTMData {
+final class GTMData {
+
+    /**
+     * The class instance
+     *
+     * @var GTMData
+     */
+    private static $instance;
 
     /**
      * The Tag Manager container ID
@@ -26,6 +33,26 @@ class GTMData {
     private static $data = array();
 
     /**
+     * The datalayer JSON string
+     *
+     * @var string
+     */
+    private static $json;
+    
+    /**
+     * Returns singleton* instance
+     *
+     * @return GTMData
+     */
+    public static function init()
+    {
+        if(static::$instance === null) {
+            static::$instance = new static();
+        }
+        return static::$instance;
+    }
+
+    /**
      * Set the container ID to a static class property
      *
      * @param string $id The container ID
@@ -34,6 +61,16 @@ class GTMData {
     public function setID($id)
     {
         self::$id = $id;
+    }
+
+    /**
+     * Get the container ID
+     *
+     * @return string
+     */
+    public function getID()
+    {
+        return self::$id;
     }
 
     /**
@@ -57,6 +94,17 @@ class GTMData {
     public function pushEvent($name)
     {
         self::$data['event'] = $name;
+    }
+
+    /**
+     * Push a transaction currency the data array
+     *
+     * @param string $code ISO 4217 format currency code e.g. EUR
+     * @return void
+     */
+    public function pushTransactionCurrency($code)
+    {
+        self::$data['ecommerce']['currencyCode'] = $code;
     }
 
     /**
@@ -88,9 +136,24 @@ class GTMData {
     {
         $defaults = array(
             'id'   => '',
-            'name' => 'GBP'
+            'name' => ''
         );
         self::$data['ecommerce']['purchase']['products'][] = $this->getDefaults($fields, $defaults);
+    }
+
+    /**
+     * Push a product impression to the data array
+     *
+     * @param array $fields An array of item fields
+     * @return void
+     */
+    public function pushProductImpression($fields)
+    {
+        $defaults = array(
+            'id'   => '',
+            'name' => ''
+        );
+        self::$data['ecommerce']['impressions'][] = $this->getDefaults($fields, $defaults);
     }
 
     /**
@@ -120,13 +183,48 @@ class GTMData {
     }
 
     /**
-     * Get the container ID
+     * Push a cart add action to the data array
      *
-     * @return string
+     * @param array $fields An array of item fields
+     * @return void
      */
-    public function getID()
+    public function pushAddToCart($fields)
     {
-        return self::$id;
+        $this->pushCartAction('add', 'addToCart', $fields);
+    }
+
+    /**
+     * Push a cart remove action to the data array
+     *
+     * @param array $fields An array of item fields
+     * @return void
+     */
+    public function pushRemoveFromCart($fields)
+    {
+        $this->pushCartAction('remove', 'removeFromCart', $fields);
+    }
+
+    /**
+     * Push a cart action to the data array
+     *
+     * @param array $action The cart action
+     * @param array $event  The event name of the action
+     * @param array $fields An array of item fields
+     * @return void
+     */
+    public function pushCartAction($action, $event, $fields)
+    {
+        $this->pushCurrent();
+
+        $defaults = array(
+            'id'   => '',
+            'name' => ''
+        );
+        self::$data['ecommerce'][$action]['products'][] = $this->getDefaults($fields, $defaults);
+
+        // add to cart actions require their own event action and push
+        $this->pushEvent($event);
+        $this->pushCurrent();
     }
 
     /**
@@ -136,9 +234,22 @@ class GTMData {
      */
     public function getDataLayer()
     {
-        $count = count(self::$data);
+        $this->pushCurrent();
 
-        if($count > 0) return 'dataLayer.push('.json_encode(self::$data, JSON_PRETTY_PRINT).');';
+        return self::$json;
+    }
+
+    /**
+     * Create a dataLayer push from the current data array
+     *
+     * @return void
+     */
+    private function pushCurrent()
+    {
+        if(!empty(self::$data)){
+            self::$json .= 'dataLayer.push('.json_encode(self::$data, JSON_PRETTY_PRINT).');';
+            self::$data = array();
+        }
     }
 
     /**
@@ -157,4 +268,10 @@ class GTMData {
         } 
         return $fields;
     }
+
+    private function __construct(){}
+
+    private function __clone(){}
+
+    private function __wakeup(){}
 }

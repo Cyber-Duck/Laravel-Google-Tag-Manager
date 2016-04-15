@@ -19,21 +19,13 @@ class GTM {
     private $data;
 
     /**
-     * View object
-     *
-     * @var GTMView
-     */
-    private $view;
-
-    /**
      * Set up the required objects for this class
      *
      * @return void
      */
     public function __construct()
     {
-        $this->data = new GTMData();
-        $this->view = new GTMView();
+        $this->data = GTMData::init();
     }
 
     /**
@@ -45,6 +37,21 @@ class GTM {
     public function id($id)
     {
         $this->data->setID($id);
+    }
+
+    /**
+     * Return the formatted dataLayer code
+     *
+     * @return string
+     */
+    public function code()
+    {
+        $view = new GTMView();
+
+        return $view->make(
+            $this->data->getID(),
+            $this->data->getDataLayer()
+        );
     }
 
     /**
@@ -68,6 +75,17 @@ class GTM {
     public function event($name)
     {
         $this->data->pushEvent($name);
+    }
+
+    /**
+     * Add the ecommerce transaction currency code
+     *
+     * @param string $code ISO 4217 format currency code e.g. EUR
+     * @return void
+     */
+    public function transactionCurrency($code)
+    {
+        $this->data->pushTransactionCurrency($code);
     }
 
     /**
@@ -105,29 +123,48 @@ class GTM {
     }
 
     /**
+     * Record a product impression
+     *
+     * @param array $fields An array of item fields
+     * @return void
+     */
+    public function productImpression($fields)
+    {
+        $this->data->pushProductImpression($fields);
+    }
+
+    /**
+     * Record a product being added to the cart
+     *
+     * @param array $fields An array of item fields
+     * @return void
+     */
+    public function addToCart($fields)
+    {
+        $this->data->pushAddToCart($fields);
+    }
+
+    /**
+     * Record a product being removed from the cart
+     *
+     * @param array $fields An array of item fields
+     * @return void
+     */
+    public function removeFromCart($fields)
+    {
+        $this->data->pushRemoveFromCart($fields);
+    }
+
+    /**
      * Refund an ecommerce transaction item quantity
      *
      * @param string $id        The id of the transaction
      * @param string $productId The id of the item
      * @param int    $quantity  The quantity to refund
-     *
      * @return void
      */
     public function refundItem($id, $productId, $quantity)
     {
         $this->data->pushRefundTransactionItem($id, $productId, $quantity);
-    }
-
-    /**
-     * Return the formatted dataLayer code
-     *
-     * @return string
-     */
-    public function code()
-    {
-        return $this->view->make(
-            $this->data->getID(),
-            $this->data->getDataLayer()
-        );
     }
 }
