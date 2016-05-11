@@ -1,5 +1,7 @@
 <?php
 
+namespace CyberDuck\LaravelGoogleTagManager\Tests;
+
 use CyberDuck\LaravelGoogleTagManager\GTM;
 
 class TagManagerTest extends TestCase

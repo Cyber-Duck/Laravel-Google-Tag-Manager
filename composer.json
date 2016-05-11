@@ -23,6 +23,11 @@
             "CyberDuck\\LaravelGoogleTagManager\\": "src/"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "CyberDuck\\LaravelGoogleTagManager\\Tests\\": "tests/"
+        }
+    },
     "extra": {
         "installer-name": "gtm"
     },
