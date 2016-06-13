@@ -15,7 +15,7 @@ class GTMServiceProvider extends ServiceProvider
         $gtm->id(config('gtm.id'));
 
         $this->publishes([
-            base_path('vendor/cyber-duck/laravel-google-tag-manager/views') => base_path('resources/views/tracking'),
+            base_path(__DIR__.'/../views') => base_path('resources/views/tracking')
         ]);
 
         $this->publishes([
