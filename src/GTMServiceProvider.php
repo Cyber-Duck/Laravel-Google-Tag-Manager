@@ -32,7 +32,7 @@ class GTMServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->singleton('cyberduck.gtml', function ($app) {
+        $this->app->singleton('cyberduck.gtm', function ($app) {
             return new GTM();
         });
     }
