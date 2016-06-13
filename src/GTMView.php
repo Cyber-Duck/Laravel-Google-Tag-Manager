@@ -20,6 +20,9 @@ class GTMView {
      */
     public function make($id, $data)
     {
+        if (!config('gtm.enabled')) {
+            return '';
+        }
         return '<script>
         window.dataLayer = window.dataLayer || [];
         '.$data.'
