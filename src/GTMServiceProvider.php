@@ -2,6 +2,7 @@
 namespace CyberDuck\LaravelGoogleTagManager;
 
 use Illuminate\Support\ServiceProvider;
+use View;
 
 class GTMServiceProvider extends ServiceProvider
 {
@@ -10,10 +11,10 @@ class GTMServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot(GTM $gtm)
+    public function boot()
     {
-        $gtm->id(config('gtm.id'));
-        View::share('GTM', $gtm);
+        $this->app['cyberduck.gtm']->id(config('gtm.id'));
+        View::share('GTM', $this->app['cyberduck.gtm']);
 
         $this->publishes([
             __DIR__.'/../views' => base_path('resources/views/tracking')
