@@ -1,8 +1,6 @@
-@inject('gtm', 'GTM')
-
 @if (!empty($transaction))
 
-    {{ $gtm->purchase(array(
+    {{ $GTM->purchase(array(
     	'id'          => $transaction['id'],
     	'affiliation' => $transaction['affiliation'],
     	'revenue'     => $transaction['revenue'],
@@ -12,7 +10,7 @@
 
     @foreach ($items as &$item)
 
-    	{{ $gtm->purchaseItem(array(
+    	{{ $GTM->purchaseItem(array(
     		'id'       => $transaction['id'],
     		'name'     => $item['name'],
     		'sku'      => $item['sku'],
@@ -22,5 +20,5 @@
     	)) }}
 
     @endforeach
-    
+
 @endif

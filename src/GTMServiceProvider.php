@@ -13,9 +13,10 @@ class GTMServiceProvider extends ServiceProvider
     public function boot(GTM $gtm)
     {
         $gtm->id(config('gtm.id'));
+        View::share('GTM', $gtm);
 
         $this->publishes([
-            base_path(__DIR__.'/../views') => base_path('resources/views/tracking')
+            __DIR__.'/../views' => base_path('resources/views/tracking')
         ]);
 
         $this->publishes([
