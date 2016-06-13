@@ -29,7 +29,7 @@ Add the following to your composer.json file
 Add the following to the list of service providers in your config/app.php file
 
 ```php
-'CyberDuck\LaravelGoogleTagManager\TagManagerServiceProvider',
+'CyberDuck\LaravelGoogleTagManager\GTMServiceProvider',
 
 ```
 
