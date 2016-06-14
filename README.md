@@ -13,7 +13,7 @@ Add the following to your composer.json file
 ```json
 {
     "require": {
-        "cyber-duck/laravel-google-tag-manager": "1.0.*"
+        "cyber-duck/laravel-google-tag-manager": "1.1.*"
     },
     "repositories": [
         {
