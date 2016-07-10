@@ -2,7 +2,7 @@
 
 Google tag manager features including events, ecommerce, and dataLayer support
 
-Author: [Andrew Mc Cormack](https://github.com/Andrew-Mc-Cormack)
+Authors: [Andrew Mc Cormack](https://github.com/Andrew-Mc-Cormack), [Simone Todaro](https://github.com/SimoTod)
 
 # Installation
 
@@ -39,10 +39,10 @@ Add the following alias to your config/app.php file
 'GTM' => 'CyberDuck\LaravelGoogleTagManager\Facades\GTM',
 ```
 
-Copy the config files by running:
+Publish configuration and view files:
 
 ```php
-php artisan vendor:publish
+php artisan vendor:publish --provider="Cyberduck\LaravelGoogleTagManager\GTMServiceProvider"
 ```
 
 Configure your GTM-XXXXX ID in config/gtm.php
@@ -53,15 +53,21 @@ Configure your GTM-XXXXX ID in config/gtm.php
 Within your main blade layout template include the GTM blade template
 
 ```php
-@include('tracking.gtm')
+@include('tracking::gtm')
 ```
 
-## Push additional data
+## Pushing additional data
 ```php
 \GTM::data('paramName', 'paramValue')
 ```
 
-## Push an event
+## Pushing an event
 ```php
-\GTM::data('eventName')
+\GTM::event('eventName')
+```
+
+## Flashing data for the next request
+```php
+\GTM::flash()
+return redirect()->action('...');
 ```

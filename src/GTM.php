@@ -9,8 +9,10 @@
  **/
 namespace CyberDuck\LaravelGoogleTagManager;
 
-class GTM {
+use Session;
 
+class GTM
+{
     /**
      * Data layer object
      *
@@ -25,7 +27,11 @@ class GTM {
      */
     public function __construct()
     {
-        $this->data = GTMData::init();
+        $this->data = new GTMData(config('gtm.id'));
+        $sessionKey = config('gtm.sessionKey');
+        if (Session::has($sessionKey)) {
+            $this->data->pushDataLayer(Session::get($sessionKey));
+        }
     }
 
     /**
@@ -89,6 +95,82 @@ class GTM {
     }
 
     /**
+     * Record a product impression
+     *
+     * @param mixed $product An array of item fields or a shoppable item
+     * @param mixed $list (Optional) The list name
+     * @param mixed $position (Optional) The position in the list
+     * @return void
+     */
+    public function productImpression($product, $list = null, $position = null)
+    {
+        if ($product instanceof Product/IsShoppable) {
+            $product = $product->getShoppableData();
+        }
+        if ($list) {
+            $product['list'] = $list;
+        }
+        if ($position) {
+            $product['position'] = $position;
+        }
+        $this->data->pushProductImpression($product);
+    }
+
+    /**
+     * Record a product impression in a promotional space
+     *
+     * @param mixed $product An array of item fields or a shoppable item
+     * @param mixed $creative The name of the promotional space
+     * @param mixed $slot The position in the promotional space
+     * @return void
+     */
+    public function productPromoImpression($product, $creative, $slot)
+    {
+        if ($product instanceof Product/IsShoppable) {
+            $product = $product->getShoppableData();
+        }
+        $product['creative'] = $creative;
+        $product['slot'] = $slot;
+        $this->data->pushProductPromoImpression($product);
+    }
+
+    /**
+     * Record a product being added to the cart
+     *
+     * @param mixed $product An array of item fields or a shoppable item
+     * @param integer $quantity The quantity to add
+     * @return void
+     */
+    public function addToCart($product, $quantity = 1)
+    {
+        if ($product instanceof Product/IsShoppable) {
+            $product = $product->getShoppableData();
+        }
+        if(!array_key_exists('quantity', $product)) {
+            $product['quantity'] = $quantity;
+        }
+        $this->data->pushAddToCart($product);
+    }
+
+    /**
+     * Record a product being removed from the cart
+     *
+     * @param mixed $product An array of item fields or a shoppable item
+     * @param integer $quantity The quantity to remove
+     * @return void
+     */
+    public function removeFromCart($product, $quantity = 1)
+    {
+        if ($product instanceof Product/IsShoppable) {
+            $product = $product->getShoppableData();
+        }
+        if(!array_key_exists('quantity', $product)) {
+            $product['quantity'] = $quantity;
+        }
+        $this->data->pushRemoveFromCart($product);
+    }
+
+    /**
      * Add an ecommerce transaction
      *
      * @param array $fields An array of purchase fields
@@ -103,12 +185,19 @@ class GTM {
      * Add an ecommerce transaction item
      * Used in conjunction with ->purchase()
      *
-     * @param array $fields An array of a purchase item fields
+     * @param mixed $product An array of item fields or a shoppable item
+     * @param integer $quantity The quantity to add
      * @return void
      */
-    public function purchaseItem($fields)
+    public function purchaseItem($product, $quantity = 1)
     {
-        $this->data->pushPurchaseItem($fields);
+        if ($product instanceof Product\IsShoppable) {
+            $product = $product->getShoppableData();
+        }
+        if(!array_key_exists('quantity', $product)) {
+            $product['quantity'] = $quantity;
+        }
+        $this->data->pushPurchaseItem($product);
     }
 
     /**
@@ -123,39 +212,6 @@ class GTM {
     }
 
     /**
-     * Record a product impression
-     *
-     * @param array $fields An array of item fields
-     * @return void
-     */
-    public function productImpression($fields)
-    {
-        $this->data->pushProductImpression($fields);
-    }
-
-    /**
-     * Record a product being added to the cart
-     *
-     * @param array $fields An array of item fields
-     * @return void
-     */
-    public function addToCart($fields)
-    {
-        $this->data->pushAddToCart($fields);
-    }
-
-    /**
-     * Record a product being removed from the cart
-     *
-     * @param array $fields An array of item fields
-     * @return void
-     */
-    public function removeFromCart($fields)
-    {
-        $this->data->pushRemoveFromCart($fields);
-    }
-
-    /**
      * Refund an ecommerce transaction item quantity
      *
      * @param string $id        The id of the transaction
@@ -166,5 +222,15 @@ class GTM {
     public function refundItem($id, $productId, $quantity)
     {
         $this->data->pushRefundTransactionItem($id, $productId, $quantity);
+    }
+
+    /**
+     * Flash data for next request
+     *
+     * @return void
+     */
+    public function flash()
+    {
+        Session::flash(config('gtm.sessionKey'), $this->data->getDataLayer());
     }
 }

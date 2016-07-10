@@ -9,8 +9,8 @@
  **/
 namespace CyberDuck\LaravelGoogleTagManager;
 
-class GTMView {
-
+class GTMView
+{
     /**
      * Return the Tag Manager code
      *

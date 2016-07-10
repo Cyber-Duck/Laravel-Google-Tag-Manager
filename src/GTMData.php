@@ -9,47 +9,37 @@
  **/
 namespace CyberDuck\LaravelGoogleTagManager;
 
-final class GTMData {
-
-    /**
-     * The class instance
-     *
-     * @var GTMData
-     */
-    private static $instance;
-
+class GTMData
+{
     /**
      * The Tag Manager container ID
      *
      * @var string
      */
-    private static $id;
+    private $id;
 
     /**
      * The Tag Manager dataLayer array of values
      *
      * @var array
      */
-    private static $data = array();
+    private $data = array();
 
     /**
      * The datalayer JSON string
      *
      * @var string
      */
-    private static $json;
-    
+    private $json;
+
     /**
-     * Returns singleton* instance
-     *
-     * @return GTMData
+     * Constructor
      */
-    public static function init()
+    public function __construct($id = null)
     {
-        if(static::$instance === null) {
-            static::$instance = new static();
+        if ($id) {
+            $this->setID($id);
         }
-        return static::$instance;
     }
 
     /**
@@ -60,7 +50,7 @@ final class GTMData {
      */
     public function setID($id)
     {
-        self::$id = $id;
+        $this->id = $id;
     }
 
     /**
@@ -70,7 +60,7 @@ final class GTMData {
      */
     public function getID()
     {
-        return self::$id;
+        return $this->id;
     }
 
     /**
@@ -82,7 +72,7 @@ final class GTMData {
      */
     public function pushData($name, $value)
     {
-        self::$data[$name] = $value;
+        $this->data[$name] = $value;
     }
 
     /**
@@ -93,7 +83,7 @@ final class GTMData {
      */
     public function pushEvent($name)
     {
-        self::$data['event'] = $name;
+        $this->data['event'] = $name;
     }
 
     /**
@@ -104,7 +94,7 @@ final class GTMData {
      */
     public function pushTransactionCurrency($code)
     {
-        self::$data['ecommerce']['currencyCode'] = $code;
+        $this->data['ecommerce']['currencyCode'] = $code;
     }
 
     /**
@@ -117,13 +107,13 @@ final class GTMData {
     {
         $defaults = array(
             'id'           => '',
-            'currencyCode' => 'GBP',
+            'currencyCode' => config('gtm.ecommerce.currency'),
             'affiliation'  => '',
             'revenue'      => '0.00',
             'tax'          => '0.00',
             'shipping'     => '0.00'
         );
-        self::$data['ecommerce']['purchase']['actionField'] = $this->getDefaults($fields, $defaults);
+        $this->data['ecommerce']['purchase']['actionField'] = $this->getDefaults($fields, $defaults);
     }
 
     /**
@@ -138,7 +128,7 @@ final class GTMData {
             'id'   => '',
             'name' => ''
         );
-        self::$data['ecommerce']['purchase']['products'][] = $this->getDefaults($fields, $defaults);
+        $this->data['ecommerce']['purchase']['products'][] = $this->getDefaults($fields, $defaults);
     }
 
     /**
@@ -153,7 +143,22 @@ final class GTMData {
             'id'   => '',
             'name' => ''
         );
-        self::$data['ecommerce']['impressions'][] = $this->getDefaults($fields, $defaults);
+        $this->data['ecommerce']['impressions'][] = $this->getDefaults($fields, $defaults);
+    }
+
+    /**
+     * Push a product promotional impression to the data array
+     *
+     * @param array $fields An array of item fields
+     * @return void
+     */
+    public function pushProductPromoImpression($fields)
+    {
+        $defaults = array(
+            'id'   => '',
+            'name' => ''
+        );
+        $this->data['ecommerce']['promoView']['promotions'][] = $this->getDefaults($fields, $defaults);
     }
 
     /**
@@ -164,7 +169,7 @@ final class GTMData {
      */
     public function pushRefundTransaction($id)
     {
-        self::$data['ecommerce']['refund']['actionField'] = array('id' => $id);
+        $this->data['ecommerce']['refund']['actionField'] = array('id' => $id);
     }
 
     /**
@@ -179,7 +184,7 @@ final class GTMData {
     {
         $this->pushRefundTransaction($id);
 
-        self::$data['ecommerce']['refund']['products'][] = array('id' => $productId, 'quantity' => $quantity);
+        $this->data['ecommerce']['refund']['products'][] = array('id' => $productId, 'quantity' => $quantity);
     }
 
     /**
@@ -220,12 +225,22 @@ final class GTMData {
             'id'   => '',
             'name' => ''
         );
-        self::$data['ecommerce'][$action]['products'][] = $this->getDefaults($fields, $defaults);
+        $this->data['ecommerce'][$action]['products'][] = $this->getDefaults($fields, $defaults);
 
         // add to cart actions require their own event action and push
         $this->pushEvent($event);
         $this->pushCurrent();
     }
+
+    /**
+     * @param array $data
+     * @return void
+     */
+    public function pushDataLayer($data)
+    {
+        $this->data = array_merge_recursive($this->data, $data);
+    }
+
 
     /**
      * Get the complete formatted dataLayer
@@ -236,7 +251,7 @@ final class GTMData {
     {
         $this->pushCurrent();
 
-        return self::$json;
+        return $this->json;
     }
 
     /**
@@ -246,9 +261,9 @@ final class GTMData {
      */
     private function pushCurrent()
     {
-        if(!empty(self::$data)){
-            self::$json .= 'dataLayer.push('.json_encode(self::$data, JSON_PRETTY_PRINT).');';
-            self::$data = array();
+        if (!empty($this->data)) {
+            $this->json .= 'dataLayer.push('.json_encode($this->data).');';
+            $this->data = array();
         }
     }
 
@@ -261,17 +276,11 @@ final class GTMData {
      */
     private function getDefaults($fields, $defaults)
     {
-        foreach($defaults as $key => $value) {
-            if(!isset($fields[$key])) {
+        foreach ($defaults as $key => $value) {
+            if (!isset($fields[$key])) {
                 $fields[$key] = $value;
             }
-        } 
+        }
         return $fields;
     }
-
-    private function __construct(){}
-
-    private function __clone(){}
-
-    private function __wakeup(){}
 }
