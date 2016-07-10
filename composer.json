@@ -13,8 +13,23 @@
         {
             "name": "Andrew Mc Cormack",
             "email": "andrewm@cyber-duck.co.uk"
+        },
+        {
+            "name": "Simone Todaro",
+            "email": "simo.todaro@gmail.com"
         }
     ],
+    "require": {
+        "php": ">=5.4.0",
+        "illuminate/config": "~5.0",
+        "illuminate/support": "~5.0"
+    },
+     "require-dev": {
+        "phpunit/phpunit": "~4.0",
+        "laravel/laravel": "~5.0",
+        "symfony/dom-crawler": "2.8.*|3.0.*",
+        "fzaninotto/faker": "^1.6"
+    },
     "support": {
         "issues": "https://github.com/cyber-duck/laravel-google-tag-manager/issues"
     },
