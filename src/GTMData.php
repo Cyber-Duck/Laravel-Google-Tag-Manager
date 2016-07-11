@@ -132,6 +132,32 @@ class GTMData
     }
 
     /**
+     * Push a details actionField
+     *
+     * @param string $list The list field
+     * @return void
+     */
+    public function pushDetailsList($list)
+    {
+        $this->data['ecommerce']['detail']['actionField']['list'] = $list;
+    }
+
+    /**
+     * Push a details item fields to the data array
+     *
+     * @param array $fields An array of a purchase item fields
+     * @return void
+     */
+    public function pushDetailsItem($fields)
+    {
+        $defaults = array(
+            'id'   => '',
+            'name' => ''
+        );
+        $this->data['ecommerce']['detail']['products'][] = $this->getDefaults($fields, $defaults);
+    }
+
+    /**
      * Push a product impression to the data array
      *
      * @param array $fields An array of item fields

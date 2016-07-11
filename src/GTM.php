@@ -35,17 +35,6 @@ class GTM
     }
 
     /**
-     * Set the Tag Manager container ID
-     *
-     * @param string $id The container ID GTM-XXXXX
-     * @return void
-     */
-    public function id($id)
-    {
-        $this->data->setID($id);
-    }
-
-    /**
      * Return the formatted dataLayer code
      *
      * @return string
@@ -127,11 +116,29 @@ class GTM
     public function productPromoImpression($product, $creative, $slot)
     {
         if ($product instanceof Product/IsShoppable) {
-            $product = $product->getShoppableData();
+            $product = $product->getShoppablePromoData();
         }
         $product['creative'] = $creative;
         $product['slot'] = $slot;
         $this->data->pushProductPromoImpression($product);
+    }
+
+    /**
+     * Record a product being viewed
+     *
+     * @param mixed $product An array of item fields or a shoppable item
+     * @param mixed $list (Optional) The list name
+     * @return void
+     */
+    public function productDetail($product, $list = null)
+    {
+        if ($product instanceof Product/IsShoppable) {
+            $product = $product->getShoppableData();
+        }
+        if ($list) {
+            $this->data->pushDetailsList($list);
+        }
+        $this->data->pushDetailsItem($product);
     }
 
     /**
