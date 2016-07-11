@@ -40,7 +40,8 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "CyberDuck\\LaravelGoogleTagManager\\Tests\\": "tests/"
+            "CyberDuck\\LaravelGoogleTagManager\\Tests\\": "tests/",
+            "CyberDuck\\LaravelGoogleTagManager\\Tests\\Models\\": "tests/app/"
         }
     },
     "extra": {

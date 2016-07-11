@@ -52,6 +52,13 @@
             ],
             $this->dummyData['purchase']['products'][1]['quantity']
         );
+        $product = new CyberDuck\LaravelGoogleTagManager\Tests\Models\Product();
+        $product->shoppableid = $this->dummyData['purchase']['products'][2]['id'];
+        $product->name = $this->dummyData['purchase']['products'][2]['name'];
+        \CyberDuck\LaravelGoogleTagManager\Facades\GTM::purchaseItem(
+            $product,
+            $this->dummyData['purchase']['products'][2]['quantity']
+        );
         return view('test::test');
     });
     Route::get('mix', function () {

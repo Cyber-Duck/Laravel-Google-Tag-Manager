@@ -2,6 +2,8 @@
 
 namespace CyberDuck\LaravelGoogleTagManager\Tests;
 
+use CyberDuck\LaravelGoogleTagManager\Tests\Models\Product;
+
 class TagManagerTest extends \Illuminate\Foundation\Testing\TestCase
 {
     const GTMID = '123456';
@@ -31,6 +33,11 @@ class TagManagerTest extends \Illuminate\Foundation\Testing\TestCase
                         "id" => $faker->word,
                         "name" => $faker->word,
                         "quantity" => 1
+                    ],
+                    [
+                        "id" => $faker->word,
+                        "name" => $faker->word,
+                        "quantity" => $faker->randomDigitNotNull,
                     ],
                     [
                         "id" => $faker->word,
@@ -140,8 +147,11 @@ class TagManagerTest extends \Illuminate\Foundation\Testing\TestCase
         $p2Id = $this->dummyData['purchase']['products'][1]['id'];
         $p2Name = $this->dummyData['purchase']['products'][1]['name'];
         $p2Qty = $this->dummyData['purchase']['products'][1]['quantity'];
+        $p3Id = $this->dummyData['purchase']['products'][2]['id'];
+        $p3Name = $this->dummyData['purchase']['products'][2]['name'];
+        $p3Qty = $this->dummyData['purchase']['products'][2]['quantity'];
         $this->visit('/transaction')
-            ->see('dataLayer.push({"ecommerce":{"purchase":{"actionField":{"id":"'.$id.'","affiliation":"'.$affiliation.'","revenue":"'.$revenue.'","tax":"'.$tax.'","shipping":"'.$shipping.'","coupon":"'.$coupon.'","currencyCode":"GBP"},"products":[{"id":"'.$p1Id.'","name":"'.$p1Name.'","quantity":'.$p1Qty.'},{"id":"'.$p2Id.'","name":"'.$p2Name.'","quantity":'.$p2Qty.'}]}}});')
+            ->see('dataLayer.push({"ecommerce":{"purchase":{"actionField":{"id":"'.$id.'","affiliation":"'.$affiliation.'","revenue":"'.$revenue.'","tax":"'.$tax.'","shipping":"'.$shipping.'","coupon":"'.$coupon.'","currencyCode":"GBP"},"products":[{"id":"'.$p1Id.'","name":"'.$p1Name.'","quantity":'.$p1Qty.'},{"id":"'.$p2Id.'","name":"'.$p2Name.'","quantity":'.$p2Qty.'},{"id":"'.$p3Id.'","name":"'.$p3Name.'","quantity":'.$p3Qty.'}]}}});')
             ->dontSee('"refund"')
             ->dontSee('"impression"')
             ->dontSee('"event"');
