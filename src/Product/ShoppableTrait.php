@@ -8,34 +8,51 @@ namespace CyberDuck\LaravelGoogleTagManager\Product;
  **/
 trait ShoppableTrait
 {
-    public function getShoppableData() {
+    public function getShoppableData()
+    {
+        $data = [
+            'id' => $this->getShoppableId(),
+            'name' => $this->getShoppableName()
+        ];
+        if (!empty($this->getShoppablePrice())) {
+            $data['price'] = $this->getShoppablePrice();
+        }
+        if (!empty($this->getShoppableBrand())) {
+            $data['brand'] = $this->getShoppableBrand();
+        }
+        if (!empty($this->getShoppableCategory())) {
+            $data['category'] = $this->getShoppableCategory();
+        }
+        if (!empty($this->getShoppableVariant())) {
+            $data['variant'] = $this->getShoppableVariant();
+        }
+        return $data;
+    }
+    public function getShoppablePromoData()
+    {
         return [
-            'id' => {$this->getShoppableId()},
-            'name' => {$this->getShoppableName()},
-            'price' => {$this->getShoppablePrice()},
-            'brand' => {$this->getShoppableBrand()},
-            'category' => {$this->getShoppableCategory()},
-            'variant' => {$this->getShoppableVariant()},
+            'id' => $this->getShoppableId(),
+            'name' => $this->getShoppableName(),
         ];
     }
-    public function getShoppablePromoData() {
-        return [
-            'id' => {$this->getShoppableId()},
-            'name' => {$this->getShoppableName()},
-        ];
+
+    public function getShoppablePrice()
+    {
+        return null;
     }
+
     public function getShoppableBrand()
     {
-        return '';
+        return null;
     }
 
     public function getShoppableCategory()
     {
-        return '';
+        return null;
     }
 
     public function getShoppableVariant()
     {
-        return '';
+        return null;
     }
 }
