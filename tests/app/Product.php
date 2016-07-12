@@ -10,11 +10,13 @@ class Product extends Model implements IsShoppable
 {
     use ShoppableTrait;
 
-    public function getShoppableId() {
+    public function getShoppableId()
+    {
         return $this->shoppableid;
     }
 
-    public function getShoppableName() {
+    public function getShoppableName()
+    {
         return $this->name;
     }
 }

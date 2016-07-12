@@ -21,6 +21,7 @@ class TagManagerTest extends \Illuminate\Foundation\Testing\TestCase
                 'value' => $faker->word
             ],
             'event' => $faker->word,
+            "list" => $faker->word,
             "purchase" => [
                 "id" => $faker->word,
                 "affiliation" => $faker->word,
@@ -110,7 +111,6 @@ class TagManagerTest extends \Illuminate\Foundation\Testing\TestCase
         $this->visit('/event')
             ->see('dataLayer.push({"event":"'.$eventName.'"});')
             ->dontSee('"refund"')
-            ->dontSee('"impression"')
             ->dontSee('"ecommerce"');
     }
 
@@ -119,6 +119,7 @@ class TagManagerTest extends \Illuminate\Foundation\Testing\TestCase
         $this->visit('/currency')
             ->see('dataLayer.push({"ecommerce":{"currencyCode":"EUR"}});')
             ->dontSee('"refund"')
+            ->dontSee('"detail"')
             ->dontSee('"impression"')
             ->dontSee('"event"');
     }
@@ -129,8 +130,81 @@ class TagManagerTest extends \Illuminate\Foundation\Testing\TestCase
             ->see('dataLayer.push({"ecommerce":{"currencyCode":"USD"}});')
             ->dontSee('dataLayer.push({"ecommerce":{"currencyCode":"EUR"}});')
             ->dontSee('"refund"')
+            ->dontSee('"detail"')
             ->dontSee('"impression"')
             ->dontSee('"event"');
+    }
+
+    public function testImpression()
+    {
+        $p1Id = $this->dummyData['purchase']['products'][0]['id'];
+        $p1Name = $this->dummyData['purchase']['products'][0]['name'];
+        $p2Id = $this->dummyData['purchase']['products'][1]['id'];
+        $p2Name = $this->dummyData['purchase']['products'][1]['name'];
+        $list = $this->dummyData['list'];
+        $this->visit('/impression')
+            ->see('dataLayer.push({"ecommerce":{"impressions":[{"id":"'.$p1Id.'","name":"'.
+                $p1Name.'","list":"'.$list.'","position":0},{"id":"'.$p2Id.'","name":"'.
+                $p2Name.'","list":"'.$list.'","position":1}]}});')
+            ->dontSee('"refund"')
+            ->dontSee('"detail"')
+            ->dontSee('"purchase"')
+            ->dontSee('"event"');
+    }
+
+    public function testImpressionCollection()
+    {
+        $p1Id = $this->dummyData['purchase']['products'][0]['id'];
+        $p1Name = $this->dummyData['purchase']['products'][0]['name'];
+        $p2Id = $this->dummyData['purchase']['products'][1]['id'];
+        $p2Name = $this->dummyData['purchase']['products'][1]['name'];
+        $list = $this->dummyData['list'];
+        $this->visit('/impression')
+            ->see('dataLayer.push({"ecommerce":{"impressions":[{"id":"'.$p1Id.'","name":"'.
+                $p1Name.'","list":"'.$list.'","position":0},{"id":"'.$p2Id.'","name":"'.
+                $p2Name.'","list":"'.$list.'","position":1}]}});')
+            ->dontSee('"refund"')
+            ->dontSee('"detail"')
+            ->dontSee('"purchase"')
+            ->dontSee('"event"');
+    }
+
+    public function testDetail()
+    {
+        $p1Id = $this->dummyData['purchase']['products'][0]['id'];
+        $p1Name = $this->dummyData['purchase']['products'][0]['name'];
+        $list = $this->dummyData['list'];
+        $this->visit('/detail')
+            ->see('dataLayer.push({"ecommerce":{"detail":{"actionField":{"list":"'.$list.
+                '"},"products":[{"id":"'.$p1Id.'","name":"'.
+                $p1Name.'"}]}}});')
+            ->dontSee('"refund"')
+            ->dontSee('"purchase"')
+            ->dontSee('"event"');
+    }
+
+    public function testAddToCart()
+    {
+        $pId = $this->dummyData['purchase']['products'][2]['id'];
+        $pName = $this->dummyData['purchase']['products'][2]['name'];
+        $pQty = $this->dummyData['purchase']['products'][2]['quantity'];
+        $this->visit('/add')
+            ->see('dataLayer.push({"ecommerce":{"add":{"products":[{"id":"'.
+                $pId.'","name":"'.$pName.'","quantity":'.$pQty.'}]}},"event":"addToCart"});')
+            ->dontSee('"refund"')
+            ->dontSee('"purchase"');
+    }
+
+    public function testRemoveToCart()
+    {
+        $pId = $this->dummyData['purchase']['products'][2]['id'];
+        $pName = $this->dummyData['purchase']['products'][2]['name'];
+        $pQty = $this->dummyData['purchase']['products'][2]['quantity'];
+        $this->visit('/remove')
+            ->see('dataLayer.push({"ecommerce":{"remove":{"products":[{"id":"'.
+                $pId.'","name":"'.$pName.'","quantity":'.$pQty.'}]}},"event":"removeFromCart"});')
+            ->dontSee('"refund"')
+            ->dontSee('"purchase"');
     }
 
     public function testTransaction()
@@ -151,7 +225,13 @@ class TagManagerTest extends \Illuminate\Foundation\Testing\TestCase
         $p3Name = $this->dummyData['purchase']['products'][2]['name'];
         $p3Qty = $this->dummyData['purchase']['products'][2]['quantity'];
         $this->visit('/transaction')
-            ->see('dataLayer.push({"ecommerce":{"purchase":{"actionField":{"id":"'.$id.'","affiliation":"'.$affiliation.'","revenue":"'.$revenue.'","tax":"'.$tax.'","shipping":"'.$shipping.'","coupon":"'.$coupon.'","currencyCode":"GBP"},"products":[{"id":"'.$p1Id.'","name":"'.$p1Name.'","quantity":'.$p1Qty.'},{"id":"'.$p2Id.'","name":"'.$p2Name.'","quantity":'.$p2Qty.'},{"id":"'.$p3Id.'","name":"'.$p3Name.'","quantity":'.$p3Qty.'}]}}});')
+            ->see('dataLayer.push({"ecommerce":{"purchase":{"actionField":{"id":"'.$id.
+                '","affiliation":"'.$affiliation.'","revenue":"'.$revenue.'","tax":"'.
+                $tax.'","shipping":"'.$shipping.'","coupon":"'.$coupon.
+                '","currencyCode":"GBP"},"products":[{"id":"'.$p1Id.'","name":"'.
+                $p1Name.'","quantity":'.$p1Qty.'},{"id":"'.$p2Id.'","name":"'.$p2Name.
+                '","quantity":'.$p2Qty.'},{"id":"'.$p3Id.'","name":"'.$p3Name.'","quantity":'.
+                $p3Qty.'}]}}});')
             ->dontSee('"refund"')
             ->dontSee('"impression"')
             ->dontSee('"event"');
