@@ -10,6 +10,7 @@
 namespace CyberDuck\LaravelGoogleTagManager;
 
 use Session;
+use Illuminate\Support\Collection;
 
 class GTM
 {
@@ -93,16 +94,31 @@ class GTM
      */
     public function productImpression($product, $list = null, $position = null)
     {
-        if ($product instanceof Product/IsShoppable) {
+        if ($product instanceof Product\IsShoppable) {
             $product = $product->getShoppableData();
         }
         if ($list) {
             $product['list'] = $list;
         }
-        if ($position) {
+        if ($position || $position === 0) {
             $product['position'] = $position;
         }
         $this->data->pushProductImpression($product);
+    }
+
+    /**
+     * Record multiple product impressionx
+     *
+     * @param Collection $products A list of item fields arrays or shoppable items
+     * @param mixed $list (Optional) The list name
+     * @param mixed $position (Optional) The position in the list
+     * @return void
+     */
+    public function productImpressions(Collection $products, $list = null)
+    {
+        $products->map(function ($product, $position) use ($list) {
+            $this->productImpression($product, $list, $position);
+        });
     }
 
     /**
@@ -115,7 +131,7 @@ class GTM
      */
     public function productPromoImpression($product, $creative, $slot)
     {
-        if ($product instanceof Product/IsShoppable) {
+        if ($product instanceof Product\IsShoppable) {
             $product = $product->getShoppablePromoData();
         }
         $product['creative'] = $creative;
@@ -132,7 +148,7 @@ class GTM
      */
     public function productDetail($product, $list = null)
     {
-        if ($product instanceof Product/IsShoppable) {
+        if ($product instanceof Product\IsShoppable) {
             $product = $product->getShoppableData();
         }
         if ($list) {
@@ -150,7 +166,7 @@ class GTM
      */
     public function addToCart($product, $quantity = 1)
     {
-        if ($product instanceof Product/IsShoppable) {
+        if ($product instanceof Product\IsShoppable) {
             $product = $product->getShoppableData();
         }
         if(!array_key_exists('quantity', $product)) {
@@ -168,7 +184,7 @@ class GTM
      */
     public function removeFromCart($product, $quantity = 1)
     {
-        if ($product instanceof Product/IsShoppable) {
+        if ($product instanceof Product\IsShoppable) {
             $product = $product->getShoppableData();
         }
         if(!array_key_exists('quantity', $product)) {

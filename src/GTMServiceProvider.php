@@ -14,7 +14,6 @@ class GTMServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->loadViewsFrom(__DIR__.'/../views', 'tracking');
-        $this->addDirectives();
 
         $this->publishes([
             __DIR__.'/../config/config.php' => config_path('gtm.php')
@@ -34,18 +33,6 @@ class GTMServiceProvider extends ServiceProvider
     {
         $this->app->singleton('cyberduck.gtm', function ($app) {
             return new GTM();
-        });
-    }
-
-    public function addDirectives()
-    {
-        Blade::directive('gtmClick', function($product) {
-            if ($product instanceof Product/IsShoppable) {
-                $product = $product->getShoppableData();
-            }
-            $bladeBit = "<?php echo 'data-product-gtm=\"";
-            $bladeBit .= json_encode($product);
-            $bladeBit .= "\" onclick=\"gtmClick()\"'; ?>";
         });
     }
 }
