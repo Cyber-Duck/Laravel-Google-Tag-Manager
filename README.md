@@ -1,7 +1,7 @@
 # Laravel Google Tag Manager
-[![Latest Stable Version](https://poser.pugx.org/cyber-duck/laravel-google-tag-manager/v/stable)](https://packagist.org/packages/cyber-duck/laravel-alternative-mailer)
-[![Total Downloads](https://poser.pugx.org/cyber-duck/laravel-google-tag-manager/downloads)](https://packagist.org/packages/cyber-duck/laravel-alternative-mailer)
-[![License](https://poser.pugx.org/cyber-duck/laravel-google-tag-manager/license)](https://packagist.org/packages/cyber-duck/laravel-alternative-mailer)
+[![Latest Stable Version](https://poser.pugx.org/cyber-duck/laravel-google-tag-manager/v/stable)](https://packagist.org/packages/cyber-duck/laravel-google-tag-manager)
+[![Total Downloads](https://poser.pugx.org/cyber-duck/laravel-google-tag-manager/downloads)](https://packagist.org/packages/cyber-duck/laravel-google-tag-manager)
+[![License](https://poser.pugx.org/cyber-duck/laravel-google-tag-manager/license)](https://packagist.org/packages/cyber-duck/laravel-google-tag-manager)
 
 Google tag manager features including events, ecommerce, and dataLayer support
 
