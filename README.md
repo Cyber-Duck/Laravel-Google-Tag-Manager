@@ -64,3 +64,6 @@ Within your main blade layout template include the GTM blade template
 \GTM::flash()
 return redirect()->action('...');
 ```
+
+## Enhanced Ecommerce
+Coming soon!!!
