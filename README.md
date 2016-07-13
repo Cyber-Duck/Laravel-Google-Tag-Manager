@@ -1,4 +1,7 @@
 # Laravel Google Tag Manager
+[![Latest Stable Version](https://poser.pugx.org/cyber-duck/laravel-google-tag-manager/v/stable)](https://packagist.org/packages/cyber-duck/laravel-alternative-mailer)
+[![Total Downloads](https://poser.pugx.org/cyber-duck/laravel-google-tag-manager/downloads)](https://packagist.org/packages/cyber-duck/laravel-alternative-mailer)
+[![License](https://poser.pugx.org/cyber-duck/laravel-google-tag-manager/license)](https://packagist.org/packages/cyber-duck/laravel-alternative-mailer)
 
 Google tag manager features including events, ecommerce, and dataLayer support
 
@@ -8,20 +11,10 @@ Authors: [Andrew Mc Cormack](https://github.com/Andrew-Mc-Cormack), [Simone Toda
 
 ## Composer
 
-Add the following to your composer.json file
+Require this package with composer:
 
-```json
-{
-    "require": {
-        "cyber-duck/laravel-google-tag-manager": "1.1.*"
-    },
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "https://github.com/cyber-duck/laravel-google-tag-manager"
-        }
-    ]
-}
+```
+composer require cyber-duck/laravel-google-tag-manager
 ```
 
 ## Framework
@@ -42,7 +35,7 @@ Add the following alias to your config/app.php file
 Publish configuration and view files:
 
 ```php
-php artisan vendor:publish --provider="Cyberduck\LaravelGoogleTagManager\GTMServiceProvider"
+php artisan vendor:publish --provider="CyberDuck\LaravelGoogleTagManager\GTMServiceProvider"
 ```
 
 Configure your GTM-XXXXX ID in config/gtm.php
