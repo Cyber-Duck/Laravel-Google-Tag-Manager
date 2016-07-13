@@ -169,7 +169,7 @@ class GTM
         if ($product instanceof Product\IsShoppable) {
             $product = $product->getShoppableData();
         }
-        if(!array_key_exists('quantity', $product)) {
+        if (!array_key_exists('quantity', $product)) {
             $product['quantity'] = $quantity;
         }
         $this->data->pushAddToCart($product);
@@ -187,7 +187,7 @@ class GTM
         if ($product instanceof Product\IsShoppable) {
             $product = $product->getShoppableData();
         }
-        if(!array_key_exists('quantity', $product)) {
+        if (!array_key_exists('quantity', $product)) {
             $product['quantity'] = $quantity;
         }
         $this->data->pushRemoveFromCart($product);
@@ -217,7 +217,7 @@ class GTM
         if ($product instanceof Product\IsShoppable) {
             $product = $product->getShoppableData();
         }
-        if(!array_key_exists('quantity', $product)) {
+        if (!array_key_exists('quantity', $product)) {
             $product['quantity'] = $quantity;
         }
         $this->data->pushPurchaseItem($product);

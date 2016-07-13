@@ -28,6 +28,7 @@ trait ShoppableTrait
         }
         return $data;
     }
+
     public function getShoppablePromoData()
     {
         return [

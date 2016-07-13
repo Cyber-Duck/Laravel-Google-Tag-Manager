@@ -17,7 +17,7 @@ class GTMServiceProvider extends ServiceProvider
 
         $this->publishes([
             __DIR__.'/../config/config.php' => config_path('gtm.php')
-        ], 'config');
+        ]);
 
         view()->composer('tracking::*', function ($view) {
              $view->with('GTM', $this->app['cyberduck.gtm']);
