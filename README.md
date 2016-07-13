@@ -32,7 +32,7 @@ Add the following alias to your config/app.php file
 'GTM' => 'CyberDuck\LaravelGoogleTagManager\Facades\GTM',
 ```
 
-Publish configuration and view files:
+Publish configuration file:
 
 ```php
 php artisan vendor:publish --provider="CyberDuck\LaravelGoogleTagManager\GTMServiceProvider"
