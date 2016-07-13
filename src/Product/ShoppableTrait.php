@@ -8,7 +8,8 @@ namespace CyberDuck\LaravelGoogleTagManager\Product;
  **/
 trait ShoppableTrait
 {
-    public function getShoppableData() {
+    public function getShoppableData()
+    {
         return [
             'id' => {$this->getShoppableId()},
             'name' => {$this->getShoppableName()},
@@ -18,12 +19,15 @@ trait ShoppableTrait
             'variant' => {$this->getShoppableVariant()},
         ];
     }
-    public function getShoppablePromoData() {
+
+    public function getShoppablePromoData()
+    {
         return [
             'id' => {$this->getShoppableId()},
             'name' => {$this->getShoppableName()},
         ];
     }
+
     public function getShoppableBrand()
     {
         return '';
