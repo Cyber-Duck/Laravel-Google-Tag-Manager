@@ -20,7 +20,7 @@ class GTMServiceProvider extends ServiceProvider
         ]);
 
         view()->composer('tracking::*', function ($view) {
-             $view->with('GTM', $this->app['cyberduck.gtm']);
+             $view->with('GTM', $this->app[GTM::class]);
         });
     }
 
@@ -31,7 +31,7 @@ class GTMServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->singleton('cyberduck.gtm', function ($app) {
+        $this->app->singleton(GTM::class, function ($app) {
             return new GTM();
         });
     }

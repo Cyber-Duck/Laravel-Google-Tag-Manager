@@ -7,6 +7,6 @@ class GTM extends Facade
 {
     protected static function getFacadeAccessor()
     {
-        return 'cyberduck.gtm';
+        return CyberDuck\LaravelGoogleTagManager\GTM;
     }
 }
