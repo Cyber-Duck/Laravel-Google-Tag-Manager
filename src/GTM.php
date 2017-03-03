@@ -55,7 +55,7 @@ class GTM
      *
      * @return string
      */
-    public function codeNoJs()
+    public function iframe()
     {
         $view = new GTMView();
 
