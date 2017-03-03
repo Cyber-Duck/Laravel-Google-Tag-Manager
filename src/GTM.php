@@ -44,9 +44,25 @@ class GTM
     {
         $view = new GTMView();
 
-        return $view->make(
+        return $view->render(
             $this->data->getID(),
             $this->data->getDataLayer()
+        );
+    }
+
+    /**
+     * Return the noJS version
+     *
+     * @return string
+     */
+    public function codeNoJs()
+    {
+        $view = new GTMView();
+
+        return $view->render(
+            $this->data->getID(),
+            $this->data->getDataLayer(),
+            true
         );
     }
 
