@@ -1,3 +1,6 @@
+# 🚨 Discontinued 🚨
+Please consider using https://github.com/spatie/laravel-googletagmanager.
+
 # Laravel Google Tag Manager
 [![Latest Stable Version](https://poser.pugx.org/cyber-duck/laravel-google-tag-manager/v/stable)](https://packagist.org/packages/cyber-duck/laravel-google-tag-manager)
 [![Total Downloads](https://poser.pugx.org/cyber-duck/laravel-google-tag-manager/downloads)](https://packagist.org/packages/cyber-duck/laravel-google-tag-manager)
